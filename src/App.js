@@ -5,19 +5,61 @@ import HighchartsReact from 'highcharts-react-official';
 
 
 const App = () => {
-  function selectPointsByDrag(e) {
+
+  const [options, setOptions] = useState({
+
+    chart: {
+      width: 600,
+
+      events: {
+        selection: selectPointsByDrag,
+        click: unselectByClick
+      },
+      zoomType: 'xy'
+    },
+
+    title: {
+      text: 'AAPL Stock Price'
+    },
+
+    series: [{
+      name: 'AAPL Stock Price',
+      data: [],
+      marker: {
+        enabled: true
+      },
+      allowPointSelect: true,
+      dataGrouping: {
+        groupPixelWidth: 20
+      },
+      point: {
+        events: {
+          click: function() {
+            if (this.dataGroup && options.series.data) {
+              console.log(
+                'raw points', options.series.data.slice(this.dataGroup.start, this.dataGroup.start + this.dataGroup.length)
+              );
+            }
+          }
+        }
+      }
+    }]
+  });
+
+  function selectPointsByDrag (e) {
 
 
     // Select points
-    Highcharts.each(this.series, function(series) {
+    Highcharts.each(this.series, function(series) { // NOTE: causes duplicate selection
       Highcharts.each(series.points, function(point) {
         if (point.x >= e.xAxis[0].min && point.x <= e.xAxis[0].max &&
           point.y >= e.yAxis[0].min && point.y <= e.yAxis[0].max) {
           point.select(true, true);
-          console.log(point.dataGroup);
-          if (point.dataGroup && options.series.data) {
+
+        //  console.log(series.yData);
+          if (point.dataGroup && series.yData) { // NOTE: xData missing
             console.log(
-              'Group', options.series.data.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length)
+              'Group', series.yData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length)
             );
 
           }
@@ -45,57 +87,18 @@ const App = () => {
     }
   }
 
-  const [options, setOptions] = useState({
-
-    chart: {
-      width: 600,
-
-      events: {
-        selection: selectPointsByDrag,
-
-        click: unselectByClick
-      },
-      zoomType: 'xy'
-    },
-
-    title: {
-      text: 'AAPL Stock Price'
-    },
-
-    series: [{
-      name: 'AAPL Stock Price',
-      data: [],
-      marker: {
-        enabled: true
-      },
-      allowPointSelect: true,
-      dataGrouping: {
-        groupPixelWidth: 20
-      },
-      point: {
-        events: {
-          click: function() {
-            console.log('dataGroup', this.dataGroup);
-            if (this.dataGroup && options.series.data) {
-              console.log(
-                'raw points', options.series.data.slice(this.dataGroup.start, this.dataGroup.start + this.dataGroup.length)
-              );
-            }
-          }
-        }
-      }
-    }]
-  });
-
   useEffect(() => {
     fetch("https://demo-live-data.highcharts.com/aapl-c.json")
       .then(response => {
         return response.json();
       })
       .then(data => {
-        setOptions({ series: [{ data: data }] });
+        setOptions({
+            series: [{ data: data }]
+        });
       });
   }, []);
+
 
   return (
     <HighchartsReact
