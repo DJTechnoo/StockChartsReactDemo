@@ -111,7 +111,9 @@ const App = () => {
           chart: {
             width: 600,
           },
-
+          xAxis: {
+            type: 'datetime'
+          },
           title: {
             text: 'AAPL Stock Price'
           },
