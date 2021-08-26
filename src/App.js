@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
+import HighchartsBoost from 'highcharts/modules/boost';
 
+HighchartsBoost(Highcharts)
 
 
 const App = () => {
@@ -24,15 +26,13 @@ const App = () => {
     },
 
     series: [{
+      boostThreshold: 1,
       name: 'AAPL Stock Price',
       data: [],
       marker: {
         enabled: true
       },
       allowPointSelect: true,
-      dataGrouping: {
-        groupPixelWidth: 20
-      }
     }]
   });
 
@@ -41,6 +41,7 @@ const App = () => {
     let series = this.series[0];
     let selectedData = [];
     // Select points
+    console.log(this)
     series.points.forEach((point) => {
       if (point.x >= e.xAxis[0].min && point.x <= e.xAxis[0].max &&
         point.y >= e.yAxis[0].min && point.y <= e.yAxis[0].max) {
