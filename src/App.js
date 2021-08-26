@@ -38,32 +38,40 @@ const App = () => {
 
   function selectPointsByDrag(e) {
 
-    let series = this.series[0];
-    let selectedData = [];
+    let series = this.series[0],
+      selectedData = [],
+      startIndex = -1,
+      endIndex = 0;
+
     // Select points
     series.points.forEach((point) => {
-      point.select(false, true); // Deselect if points have previously been selected.
+      point.select(false, true);
       if (point.x >= e.xAxis[0].min && point.x <= e.xAxis[0].max &&
         point.y >= e.yAxis[0].min && point.y <= e.yAxis[0].max) {
         point.select(true, true);
-        //  console.log(options.series);
-        //  console.log(point.dataGroup);
-        if (point.dataGroup) {
-          const xData = series.xData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length);
-          const yData = series.yData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length);
-          for (let i in xData) { // NOTE: Better to find starting and ending index of the entire data array.
-            selectedData.push([xData[i], yData[i]]);
-          }
-          /*  console.log(
-              'GroupY', series.yData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length),
-                'GroupX', series.xData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length)
-            );*/
 
+        if (point.dataGroup) {
+          if (startIndex === -1) {
+            startIndex = point.dataGroup.start;
+            endIndex = startIndex;
+          }
+          endIndex += point.dataGroup.length;
+          /* const xData = series.xData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length);
+           const yData = series.yData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length);
+
+           for (let i in xData) { // NOTE: Better to find starting and ending index of the entire data array.
+             selectedData.push([xData[i], yData[i]]);
+           }
+           console.log(series.options.data);
+           console.log(
+           'GroupY', series.yData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length),
+           'GroupX', series.xData.slice(point.dataGroup.start, point.dataGroup.start + point.dataGroup.length)
+           );*/
         }
       }
     });
-
-    //  console.log('Res:', selectedData);
+    // Better way, (instead of the above)
+    selectedData = series.options.data.slice(startIndex, endIndex);
     setSelectedData(selectedData);
 
     return false; // Don't zoom
@@ -120,7 +128,6 @@ const App = () => {
           },
 
           series: [{
-         //   name: 'AAPL Stock Price',
             data: selectedData,
             marker: {
               enabled: true
