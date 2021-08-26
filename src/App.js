@@ -42,6 +42,7 @@ const App = () => {
     let selectedData = [];
     // Select points
     series.points.forEach((point) => {
+      point.select(false, true); // Deselect if points have previously been selected.
       if (point.x >= e.xAxis[0].min && point.x <= e.xAxis[0].max &&
         point.y >= e.yAxis[0].min && point.y <= e.yAxis[0].max) {
         point.select(true, true);
