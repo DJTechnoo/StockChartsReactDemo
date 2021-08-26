@@ -106,7 +106,7 @@ const App = () => {
 
       <HighchartsReact
         highcharts={Highcharts}
-        constructorType={"stockChart"}
+        constructorType={"chart"}
         options={{
           chart: {
             width: 600,
