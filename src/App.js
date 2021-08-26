@@ -20,7 +20,7 @@ const App = () => {
     },
 
     title: {
-      text: 'AAPL Stock Price'
+      text: 'Primary chart'
     },
 
     series: [{
@@ -116,11 +116,11 @@ const App = () => {
             type: 'datetime'
           },
           title: {
-            text: 'AAPL Stock Price'
+            text: 'Secondary chart'
           },
 
           series: [{
-            name: 'AAPL Stock Price',
+         //   name: 'AAPL Stock Price',
             data: selectedData,
             marker: {
               enabled: true
