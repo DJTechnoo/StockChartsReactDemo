@@ -32,6 +32,11 @@ const App = () => {
       allowPointSelect: true,
       dataGrouping: {
         groupPixelWidth: 20
+      },
+      point: {
+        events: {
+          click: click
+        }
       }
     }]
   });
@@ -89,6 +94,12 @@ const App = () => {
       points.forEach((point) => {
         point.select(false);
       });
+    }
+  }
+
+  function click() { // Select a single point
+    if (this.dataGroup) {
+      setSelectedData(this.series.options.data.slice(this.dataGroup.start, this.dataGroup.start + this.dataGroup.length));
     }
   }
 
